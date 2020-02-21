@@ -1,0 +1,177 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_gravity="start"
+    android:background="@color/lightgray"
+    android:orientation="vertical"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    tools:context="com.home.remote.MainActivity" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/textView_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="服务器：" />
+
+        <EditText
+            android:id="@+id/editText_ip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="homedevice.iask.in"
+            android:width="200dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/TextView02"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="端口：" />
+
+        <EditText
+            android:id="@+id/EditText_port"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="39627"
+            android:width="100dp" >
+
+            <requestFocus />
+        </EditText>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="left|start"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" >
+
+        <TextView
+            android:id="@+id/TextView_status_lable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="设备状态：" />
+
+        <TextView
+            android:id="@+id/TextView_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingLeft="20dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp" >
+
+        <Button
+            android:id="@+id/button_tv_power"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="电视电源"
+            android:textColor="@color/red" />
+
+        <Button
+            android:id="@+id/button_magic_power"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="魔盒电源"
+            android:textColor="@color/red" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingBottom="10dp"
+        android:paddingTop="5dp" >
+
+        <Button
+            android:id="@+id/Button_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="左转"
+            android:textColor="@color/green" />
+
+		<Button
+		    android:id="@+id/Button_reset"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:layout_weight="1"
+		    android:text="复位"
+		    android:textColor="@color/green" />
+
+        <Button
+            android:id="@+id/Button_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="右转"
+            android:textColor="@color/green" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:gravity="center_horizontal|center"
+        android:orientation="vertical" >
+
+        <Button
+            android:id="@+id/button_connect"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="连接"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/Button_ring"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="响铃/亲友圈"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/Button_manual_answer"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="确定/接听"
+            android:textSize="30sp" />
+
+        <Button
+            android:id="@+id/Button_auto_answer"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="播放电视节目"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+</LinearLayout>
