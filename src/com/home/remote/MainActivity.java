@@ -18,6 +18,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Message;
 import android.os.PowerManager.WakeLock;
 import android.text.TextUtils;
@@ -81,68 +82,85 @@ public class MainActivity extends Activity {
         Log.i(TAG, "onCreate finished");
     }
 
-    private Handler mHandler = new Handler() {
-    	@Override
-    	public void handleMessage(Message msg) {
-    		super.handleMessage(msg);
-    		switch (msg.what){
-    			case STATUS:
-    				if (isConnect) {
-    					TextView_status.setText("连接到服务器！");
-    				} else {
-    					TextView_status.setText("未连接到服务器！");
-    				}
-    				Button_connect.setText(isConnect ? "已连接" : "连接");
-    				if (mSocket != null) {
-    					isConnect = mSocket.isConnected() && !mSocket.isClosed();
-    				} else {
-    					isConnect = false;
-    				}
-    				onlinejudgetimecount++;
-    				/*if (onlinetimeoutrecord < 0) {
-    					onlinetimeoutrecord = onlinetimecount;
-    				}
-    				if (onlinejudgetimeoutrecord < 0) {
-    					onlinejudgetimeoutrecord = onlinejudgetimecount;
-    				}
-    				long onlineperiod = onlinetimecount - onlinetimeoutrecord;
-    				long onlinejudgeperiod = onlinejudgetimecount - onlinejudgetimeoutrecord;
-    				if (onlinejudgeperiod >= onlineperiod + 5) {
-    					onlinetimeoutrecord = onlinetimecount;
-    					onlinejudgetimeoutrecord = onlinejudgetimecount;
-    					isonline = false;
-    				}*/
-    				if (onlinejudgetimecount - onlinetimecount > 5) {
-    					isonline = false;
-    					onlinetimecount = 0;
-    					onlinejudgetimecount = 0;
-    				}
-    				if (isonline) {
-    					Button_magic_power.setTextColor(getResources().getColor(R.color.green));
-                    } else {
-                    	Button_magic_power.setTextColor(getResources().getColor(R.color.red));
-                    }
-    				//Log.i(TAG, "onlineperiod = " + onlineperiod + ", onlinejudgeperiod = " + onlinejudgeperiod + ", isonline = " + isonline + ", isConnect = " + isConnect);
-    				//Log.i(TAG, "onlinejudgetimecount = " + onlinejudgetimecount + ", onlinetimecount = " + onlinetimecount + "isonline = " + isonline + ", isConnect = " + isConnect);
-    				mHandler.sendEmptyMessageDelayed(STATUS, 1000);
-    				sendSocketMessage("client online");
-    				break;
-    			case START_SOCKET:
-    				connectServerWithTCPSocket();
-    				break;
-    			case CLOSE_SOCKET:
-                	closeSocket();
-    				break;
-    			case SERIESACTION:
-    				if (msg.obj != null) {
-    					sendSocketMessage((String)msg.obj);
-    				}
-    				break;
-    			default:
-    				break;
-    		}
-    	}
+    //private HandlerThread mChildThread;
+    //private Handler mChildHandler;
+    private Handler mHandler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+        	switch (msg.what){
+			case STATUS:
+				if (isConnect) {
+					TextView_status.setText("连接到服务器！");
+				} else {
+					TextView_status.setText("未连接到服务器！");
+				}
+				Button_connect.setText(isConnect ? "已连接" : "连接");
+				if (mSocket != null) {
+					isConnect = mSocket.isConnected() && !mSocket.isClosed();
+				} else {
+					isConnect = false;
+				}
+				onlinejudgetimecount++;
+				/*if (onlinetimeoutrecord < 0) {
+					onlinetimeoutrecord = onlinetimecount;
+				}
+				if (onlinejudgetimeoutrecord < 0) {
+					onlinejudgetimeoutrecord = onlinejudgetimecount;
+				}
+				long onlineperiod = onlinetimecount - onlinetimeoutrecord;
+				long onlinejudgeperiod = onlinejudgetimecount - onlinejudgetimeoutrecord;
+				if (onlinejudgeperiod >= onlineperiod + 5) {
+					onlinetimeoutrecord = onlinetimecount;
+					onlinejudgetimeoutrecord = onlinejudgetimecount;
+					isonline = false;
+				}*/
+				if (onlinejudgetimecount - onlinetimecount > 5) {
+					isonline = false;
+					onlinetimecount = 0;
+					onlinejudgetimecount = 0;
+				}
+				if (isonline) {
+					Button_magic_power.setTextColor(getResources().getColor(R.color.green));
+                } else {
+                	Button_magic_power.setTextColor(getResources().getColor(R.color.red));
+                }
+				//Log.i(TAG, "onlineperiod = " + onlineperiod + ", onlinejudgeperiod = " + onlinejudgeperiod + ", isonline = " + isonline + ", isConnect = " + isConnect);
+				//Log.i(TAG, "onlinejudgetimecount = " + onlinejudgetimecount + ", onlinetimecount = " + onlinetimecount + "isonline = " + isonline + ", isConnect = " + isConnect);
+				mHandler.sendEmptyMessageDelayed(STATUS, 1000);
+				sendSocketMessage("client online");
+				break;
+			case START_SOCKET:
+				connectServerWithTCPSocket();
+				break;
+			case CLOSE_SOCKET:
+            	closeSocket();
+				break;
+			case SERIESACTION:
+				if (msg.obj != null) {
+					sendSocketMessage((String)msg.obj);
+				}
+				break;
+			default:
+				break;
+		}
+        }
     };
+    
+    /*private void initBackThread()
+    {
+    	mChildThread = new HandlerThread("childthread");
+    	mChildThread.start();
+    	mChildHandler = new Handler(mChildThread.getLooper())
+        {
+            @Override
+            public void handleMessage(Message msg)
+            {
+            	
+            }
+        };
+    }*/
     
     private void init_button() {
     	EditText_ip = (EditText) findViewById(R.id.editText_ip);
@@ -166,16 +184,32 @@ public class MainActivity extends Activity {
     	Button_ring.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            	sendSocketMessage("speaker action");
-            	sendToHandle(SERIESACTION, "magic m", 0);
-            	sendToHandle(SERIESACTION, "magic ok", 500);
+            	int period = 0;
+            	sendToHandle(SERIESACTION, "speaker action", period);
+            	/*for (int i = 0; i < 2; i++) {
+            		period = period + 500;
+            		sendToHandle(SERIESACTION, "magic back", period);
+            	}*/
+            	/*period = period + 500;
+            	sendToHandle(SERIESACTION, "magic home", period);
+            	period = period + 500;
+            	sendToHandle(SERIESACTION, "magic home", period);
+            	period = period + 500;
+            	sendToHandle(SERIESACTION, "magic m", period);
+            	for (int i = 0; i < 5; i++) {
+            		period = period + 500;
+            		sendToHandle(SERIESACTION, "magic left", period);
+            	}
+            	period = period + 500;
+            	sendToHandle(SERIESACTION, "magic ok", period);*/
             }
         });
     	Button_manual_answer = (Button) findViewById(R.id.Button_manual_answer);
     	Button_manual_answer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            	sendSocketMessage("magic ok");
+            	//sendSocketMessage("magic ok");
+            	sendToHandle(SERIESACTION, "iptv0 ok", 0);
             }
         });
     	Button_auto_answer = (Button) findViewById(R.id.Button_auto_answer);
@@ -186,47 +220,67 @@ public class MainActivity extends Activity {
             	Button_ring.setEnabled(false);
             	Button_manual_answer.setEnabled(false);
             	Button_auto_answer.setEnabled(false);*/
-            	sendToHandle(SERIESACTION, "magic m", 0);
-            	for (int i = 0; i < 5; i++) {
-            		sendToHandle(SERIESACTION, "magic left", 500 + i * 500);//2500
+            	int period = 0;
+            	for (int i = 0; i < 4; i++) {
+            		period = period + 500;
+            		sendToHandle(SERIESACTION, "iptv0 back", period);
             	}
-            	sendToHandle(SERIESACTION, "magic right", 3000);
-            	sendToHandle(SERIESACTION, "magic ok", 2000);//打开小鹰直播
+            	/*period = period + 500;
+            	sendToHandle(SERIESACTION, "magic home", period);
+            	period = period + 500;
+            	sendToHandle(SERIESACTION, "magic home", period);
+            	period = period + 500;
+            	sendToHandle(SERIESACTION, "magic m", period);
+            	for (int i = 0; i < 5; i++) {
+            		period = period + 500;
+            		sendToHandle(SERIESACTION, "magic left", period);
+            	}*/
+            	period = period + 500;
+            	sendToHandle(SERIESACTION, "iptv0 home", period);
+            	period = period + 500;
+            	sendToHandle(SERIESACTION, "iptv0 number1", period);
+            	period = period + 500;
+            	sendToHandle(SERIESACTION, "iptv0 number1", period);//打开小鹰直播
             }
         });
     	Button_tv_power = (Button) findViewById(R.id.button_tv_power);
     	Button_tv_power.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            	sendSocketMessage("tv power");
+            	//sendSocketMessage("tv power");
+            	sendToHandle(SERIESACTION, "tv power", 0);
             }
         });
     	Button_magic_power = (Button) findViewById(R.id.button_magic_power);
     	Button_magic_power.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            	sendSocketMessage("magic power");
+            	//sendSocketMessage("magic power");
+            	sendToHandle(SERIESACTION, "tv hdmi", 0);
             }
         });
     	Button_left = (Button) findViewById(R.id.Button_left);
     	Button_left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            	sendSocketMessage("camera left");
+            	//sendSocketMessage("camera left");
+            	sendToHandle(SERIESACTION, "camera left", 0);
             }
         });
     	Button_reset = (Button) findViewById(R.id.Button_reset);
     	Button_reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            	sendSocketMessage("camera reset");
+            	//sendSocketMessage("camera reset");
+            	sendToHandle(SERIESACTION, "camera reset", 0);
             }
         });
     	Button_right = (Button) findViewById(R.id.Button_right);
     	Button_right.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            	sendSocketMessage("camera right");
+            	//sendSocketMessage("camera right");
+            	sendToHandle(SERIESACTION, "camera right", 0);
             }
         });
     }
@@ -236,6 +290,7 @@ public class MainActivity extends Activity {
     	message.what = type;
     	message.obj = mess;
     	mHandler.sendMessageDelayed(message, delay);
+    	Log.i(TAG, "type = " + type + ", tv command = " + message + ", delay = " + delay);
     }
     
     private void connectServerWithTCPSocket() {   
@@ -279,7 +334,7 @@ public class MainActivity extends Activity {
               			while ((len = mRead.read(temp)) > 0) {
               				line = new String(temp,0,len);
                             Log.i(TAG, "getdata = " + line + ", len = " + len);
-                            if (line.startsWith("magic online") || line.startsWith("result magic online")) {
+                            if (line.contains("magic online") || line.contains("result magic online")) {
                             	isonline = true;//design to update per 2 seconds
                             	onlinetimecount++;
                             }

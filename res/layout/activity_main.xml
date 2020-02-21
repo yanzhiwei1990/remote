@@ -99,7 +99,7 @@
             android:id="@+id/button_magic_power"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:text="魔盒电源"
+            android:text="HDMI通道"
             android:textColor="@color/red" />
 
     </LinearLayout>
@@ -156,7 +156,7 @@
             android:id="@+id/Button_ring"
             android:layout_width="250dp"
             android:layout_height="60dp"
-            android:text="响铃/亲友圈"
+            android:text="响铃"
             android:textSize="30sp" />
 
         <Button
@@ -170,7 +170,7 @@
             android:id="@+id/Button_auto_answer"
             android:layout_width="250dp"
             android:layout_height="60dp"
-            android:text="播放电视节目"
+            android:text="电视节目"
             android:textSize="30sp" />
     </LinearLayout>
 
